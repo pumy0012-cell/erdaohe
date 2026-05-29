@@ -6,7 +6,7 @@ import { Search, Layers, Navigation, Plus, Minus, Building2, Briefcase, MapPin, 
 import BottomNav from "@/components/BottomNav";
 import { Map, View } from "ol";
 import { Tile as TileLayer } from "ol/layer";
-import { OSM } from "ol/source";
+import { XYZ } from "ol/source";
 import { fromLonLat } from "ol/proj";
 import "ol/ol.css";
 
@@ -51,15 +51,17 @@ export default function MapPage() {
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
 
-    const osmLayer = new TileLayer({
-      source: new OSM({
-        attributions: '© OpenStreetMap contributors',
+    const esriLayer = new TileLayer({
+      source: new XYZ({
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        attributions: '© Esri',
       }),
+      className: 'esri-tile',
     });
 
     const map = new Map({
       target: mapRef.current,
-      layers: [osmLayer],
+      layers: [esriLayer],
       view: new View({
         center: fromLonLat(CENTER_COORDS),
         zoom: INITIAL_ZOOM,

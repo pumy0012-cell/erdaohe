@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
+import { useAdmin } from "@/contexts/AdminContext";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAdmin();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [username, setUsername] = useState("");
@@ -13,7 +15,9 @@ export default function LoginPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push("/dashboard");
+    if (login(username, password)) {
+      router.push("/dashboard");
+    }
   };
 
   return (

@@ -4,13 +4,14 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Shield, Users, FileText, Home, BarChart3, Briefcase, DollarSign, LogOut, ChevronDown, ChevronUp, Save, Plus, Trash2 } from "lucide-react";
 
-interface Organization { id: number; name: string; role: string; contact: string; phone: string; email: string; color: string; }
+interface Contact { id: number; name: string; phone: string; email: string; position: string; }
+interface OrganizationUnit { id: number; name: string; contacts: Contact[]; }
 interface Archive { id: number; name: string; type: string; date: string; size: string; status: string; }
 interface FundItem { category: string; plan: number; actual: number; }
 
 export default function AdminPage() {
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
@@ -26,16 +27,19 @@ export default function AdminPage() {
   const [immigrantOverview, setImmigrantOverview] = useState("");
   const [workProgressText, setWorkProgressText] = useState("");
   const [workDynamicText, setWorkDynamicText] = useState("");
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [organizationUnits, setOrganizationUnits] = useState<OrganizationUnit[]>([]);
   const [archives, setArchives] = useState<Archive[]>([]);
   const [fundData, setFundData] = useState<FundItem[]>([]);
+  
+  const [newOrgName, setNewOrgName] = useState("");
+  const [newContactName, setNewContactName] = useState("");
+  const [newContactPhone, setNewContactPhone] = useState("");
+  const [newContactEmail, setNewContactEmail] = useState("");
+  const [newContactPosition, setNewContactPosition] = useState("");
+  const [selectedOrgId, setSelectedOrgId] = useState<number | "">("");
 
   useEffect(() => {
-    const adminLoggedIn = localStorage.getItem("adminLoggedIn");
-    if (adminLoggedIn === "true") {
-      setIsLoggedIn(true);
-      loadData();
-    }
+    loadData();
   }, []);
 
   const loadData = () => {
@@ -46,14 +50,14 @@ export default function AdminPage() {
       setImmigrantOverview(parsed.immigrantOverview || "");
       setWorkProgressText(parsed.workProgressText || "");
       setWorkDynamicText(parsed.workDynamicText || "");
-      setOrganizations(parsed.organizations || []);
+      setOrganizationUnits(parsed.organizationUnits || []);
       setArchives(parsed.archives || []);
       setFundData(parsed.fundData || []);
     }
   };
 
   const saveData = () => {
-    const data = { projectOverview, immigrantOverview, workProgressText, workDynamicText, organizations, archives, fundData };
+    const data = { projectOverview, immigrantOverview, workProgressText, workDynamicText, organizationUnits, archives, fundData };
     localStorage.setItem("appData", JSON.stringify(data));
     alert("保存成功！");
   };
@@ -98,10 +102,51 @@ export default function AdminPage() {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
-  const deleteOrganization = (id: number) => {
-    if (confirm("确定要删除这个联系人吗？")) {
-      setOrganizations(organizations.filter(o => o.id !== id));
+  const addOrganizationUnit = () => {
+    if (!newOrgName.trim()) return;
+    const newUnit: OrganizationUnit = {
+      id: Date.now(),
+      name: newOrgName.trim(),
+      contacts: []
+    };
+    setOrganizationUnits([...organizationUnits, newUnit]);
+    setNewOrgName("");
+  };
+
+  const deleteOrganizationUnit = (id: number) => {
+    if (confirm("确定要删除这个参建单位吗？")) {
+      setOrganizationUnits(organizationUnits.filter(o => o.id !== id));
     }
+  };
+
+  const addContact = () => {
+    if (!newContactName.trim() || !selectedOrgId) return;
+    const newContact: Contact = {
+      id: Date.now(),
+      name: newContactName.trim(),
+      phone: newContactPhone.trim(),
+      email: newContactEmail.trim(),
+      position: newContactPosition.trim()
+    };
+    setOrganizationUnits(organizationUnits.map(unit => {
+      if (unit.id === selectedOrgId) {
+        return { ...unit, contacts: [...unit.contacts, newContact] };
+      }
+      return unit;
+    }));
+    setNewContactName("");
+    setNewContactPhone("");
+    setNewContactEmail("");
+    setNewContactPosition("");
+  };
+
+  const deleteContact = (orgId: number, contactId: number) => {
+    setOrganizationUnits(organizationUnits.map(unit => {
+      if (unit.id === orgId) {
+        return { ...unit, contacts: unit.contacts.filter(c => c.id !== contactId) };
+      }
+      return unit;
+    }));
   };
 
   const deleteArchive = (id: number) => {
@@ -209,26 +254,94 @@ export default function AdminPage() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-4">
+          <button onClick={() => toggleSection('work')} className="w-full flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
+                <Briefcase className="w-5 h-5 text-orange-600" />
+              </div>
+              <span className="font-semibold text-gray-800">工作简报管理</span>
+            </div>
+            {expandedSections.work ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
+          </button>
+          {expandedSections.work && (
+            <div className="px-6 pb-6 space-y-4 border-t border-gray-100">
+              <div className="pt-4">
+                <h3 className="text-sm font-medium text-gray-700 mb-2">主要工作进展</h3>
+                <textarea value={workProgressText} onChange={(e) => setWorkProgressText(e.target.value)} className="w-full h-40 p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" placeholder="请输入主要工作进展内容..." />
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-gray-700 mb-2">工作动态</h3>
+                <textarea value={workDynamicText} onChange={(e) => setWorkDynamicText(e.target.value)} className="w-full h-24 p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" placeholder="请输入工作动态内容..." />
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-4">
           <button onClick={() => toggleSection('contacts')} className="w-full flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
                 <Users className="w-5 h-5 text-indigo-600" />
               </div>
               <span className="font-semibold text-gray-800">通讯录管理</span>
-              <span className="text-sm text-gray-500">({organizations.length}个联系人)</span>
+              <span className="text-sm text-gray-500">({organizationUnits.reduce((sum, u) => sum + u.contacts.length, 0)}个联系人)</span>
             </div>
             {expandedSections.contacts ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
           </button>
           {expandedSections.contacts && (
             <div className="px-6 pb-6 border-t border-gray-100">
-              <div className="pt-4 space-y-3">
-                {organizations.map((org) => (
-                  <div key={org.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-800">{org.name}</h3>
-                      <p className="text-sm text-gray-500">{org.role} · {org.contact} · {org.phone}</p>
+              <div className="pt-4 space-y-4">
+                <div className="p-4 bg-gray-50 rounded-xl">
+                  <h4 className="text-sm font-medium text-gray-700 mb-3">新增参建单位</h4>
+                  <div className="flex gap-2">
+                    <input type="text" value={newOrgName} onChange={(e) => setNewOrgName(e.target.value)} placeholder="参建单位名称" className="flex-1 h-10 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <button onClick={addOrganizationUnit} className="px-4 h-10 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center gap-1"><Plus className="w-4 h-4" />添加</button>
+                  </div>
+                </div>
+                
+                <div className="p-4 bg-gray-50 rounded-xl">
+                  <h4 className="text-sm font-medium text-gray-700 mb-3">新增联系人</h4>
+                  <div className="space-y-2">
+                    <select value={selectedOrgId} onChange={(e) => setSelectedOrgId(e.target.value ? Number(e.target.value) : "")} className="w-full h-10 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <option value="">选择所属参建单位</option>
+                      {organizationUnits.map(unit => (
+                        <option key={unit.id} value={unit.id}>{unit.name}</option>
+                      ))}
+                    </select>
+                    <div className="grid grid-cols-2 gap-2">
+                      <input type="text" value={newContactName} onChange={(e) => setNewContactName(e.target.value)} placeholder="联系人姓名" className="h-10 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                      <input type="text" value={newContactPosition} onChange={(e) => setNewContactPosition(e.target.value)} placeholder="职务" className="h-10 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                     </div>
-                    <button onClick={() => deleteOrganization(org.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
+                    <div className="grid grid-cols-2 gap-2">
+                      <input type="text" value={newContactPhone} onChange={(e) => setNewContactPhone(e.target.value)} placeholder="电话" className="h-10 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                      <input type="text" value={newContactEmail} onChange={(e) => setNewContactEmail(e.target.value)} placeholder="邮箱" className="h-10 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <button onClick={addContact} className="w-full h-10 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center justify-center gap-1"><Plus className="w-4 h-4" />添加联系人</button>
+                  </div>
+                </div>
+
+                {organizationUnits.map((unit) => (
+                  <div key={unit.id} className="border border-gray-200 rounded-xl overflow-hidden">
+                    <div className="flex items-center justify-between p-4 bg-gray-100">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-800">{unit.name}</h3>
+                        <p className="text-sm text-gray-500">{unit.contacts.length}个联系人</p>
+                      </div>
+                      <button onClick={() => deleteOrganizationUnit(unit.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                    {unit.contacts.length > 0 && (
+                      <div className="divide-y divide-gray-100">
+                        {unit.contacts.map((contact) => (
+                          <div key={contact.id} className="flex items-center justify-between p-4">
+                            <div className="flex-1">
+                              <p className="font-medium text-gray-800">{contact.name}</p>
+                              <p className="text-sm text-gray-500">{contact.position} · {contact.phone} · {contact.email}</p>
+                            </div>
+                            <button onClick={() => deleteContact(unit.id, contact.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -259,30 +372,6 @@ export default function AdminPage() {
                     <button onClick={() => deleteArchive(archive.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
                   </div>
                 ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-4">
-          <button onClick={() => toggleSection('work')} className="w-full flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
-                <Briefcase className="w-5 h-5 text-orange-600" />
-              </div>
-              <span className="font-semibold text-gray-800">工作简报管理</span>
-            </div>
-            {expandedSections.work ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
-          </button>
-          {expandedSections.work && (
-            <div className="px-6 pb-6 space-y-4 border-t border-gray-100">
-              <div className="pt-4">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">主要工作进展</h3>
-                <textarea value={workProgressText} onChange={(e) => setWorkProgressText(e.target.value)} className="w-full h-40 p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" placeholder="请输入主要工作进展内容..." />
-              </div>
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">工作动态</h3>
-                <textarea value={workDynamicText} onChange={(e) => setWorkDynamicText(e.target.value)} className="w-full h-24 p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" placeholder="请输入工作动态内容..." />
               </div>
             </div>
           )}

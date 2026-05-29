@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FileText, FileEdit, CheckCircle, FolderOpen, ChevronRight, ChevronLeft, X, Calendar, Clock, Building2, MapPin, Users, Home, Trees, Warehouse, Landmark, Building, Briefcase, ChevronDown, ChevronUp } from "lucide-react";
+import { FileText, FileEdit, CheckCircle, FolderOpen, ChevronRight, ChevronLeft, X, Calendar, Clock, Building2, MapPin, Users, Home, Trees, Warehouse, Landmark, Building, Briefcase, ChevronDown, ChevronUp, DollarSign } from "lucide-react";
+import { useAdmin } from "@/contexts/AdminContext";
 import BottomNav from "@/components/BottomNav";
 
 const stats = [
@@ -300,6 +301,7 @@ const importantData = [
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { userInfo } = useAdmin();
   const [dataPage, setDataPage] = useState(0);
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
   const [milestoneIndex, setMilestoneIndex] = useState(0);
@@ -364,14 +366,9 @@ export default function DashboardPage() {
 
       {/* Header */}
       <div className="h-16 flex items-center justify-between px-4 bg-white/80 backdrop-blur-xl border-b border-slate-200/50">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200/50">
-            <Home className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h1 className="text-lg font-bold text-slate-800">Hello, 管理员</h1>
-            <p className="text-xs text-slate-500">二道河水库工程</p>
-          </div>
+        <div>
+          <h1 className="text-lg font-bold text-slate-800">Hello, {userInfo?.username || "管理员"}</h1>
+          <p className="text-xs text-slate-500">二道河水库工程</p>
         </div>
       </div>
 
@@ -387,7 +384,7 @@ export default function DashboardPage() {
               <Home className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 text-left">
-              <h2 className="text-[15px] font-bold text-slate-800">项目概述</h2>
+              <h2 className="text-base font-bold text-slate-800">项目概述</h2>
               <p className="text-xs text-slate-500">工程概况 · 移民概况 · 重要数据</p>
             </div>
             <div className={`transform transition-transform duration-300 ${expandedSections.projectOverview ? 'rotate-180' : ''}`}>
@@ -399,26 +396,20 @@ export default function DashboardPage() {
             <div className="space-y-3">
               {/* 工程概况 - 独立卡片 */}
               <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-5 border border-slate-200/50 shadow-sm hover:shadow-lg transition-shadow">
-                <h3 className="text-[14px] font-semibold text-slate-800 mb-3 flex items-center gap-2.5">
-                  <div className="w-9 h-9 bg-gradient-to-br from-indigo-400 to-purple-400 rounded-xl flex items-center justify-center shadow-md">
-                    <Home className="w-5 h-5 text-white" />
-                  </div>
+                <h3 className="text-sm font-semibold text-slate-800 mb-3">
                   工程概况
                 </h3>
-                <p className="text-[13px] text-slate-600 leading-7 pl-11 tracking-wide">
+                <p className="text-sm text-gray-600 leading-7 indent-8">
                   二道河水库工程位于大石河流域上游，主坝位于北京市房山区佛子庄乡佛子庄村。水库总库容7632万立方米，属于中型水库，工程施工总工期共58个月。水库大坝是北京市首座碾压混凝土重力坝，坝高100米，为目前北京市最高大坝。水库任务以防洪为主，为改善生态环境创造条件。主要建设内容包括碾压混凝土重力坝、泄水建筑物、水库管理站、改移道路等。
                 </p>
               </div>
 
               {/* 移民概况 - 独立卡片 */}
               <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-5 border border-slate-200/50 shadow-sm hover:shadow-lg transition-shadow">
-                <h3 className="text-[14px] font-semibold text-slate-800 mb-3 flex items-center gap-2.5">
-                  <div className="w-9 h-9 bg-gradient-to-br from-emerald-400 to-teal-400 rounded-xl flex items-center justify-center shadow-md">
-                    <Users className="w-5 h-5 text-white" />
-                  </div>
+                <h3 className="text-sm font-semibold text-slate-800 mb-3">
                   移民概况
                 </h3>
-                <p className="text-[13px] text-slate-600 leading-7 pl-11 tracking-wide">
+                <p className="text-sm text-gray-600 leading-7 indent-8">
                   房山区二道河水库建设工程建设征地涉及北京市房山区2个乡（镇）4个行政村，涉及总土地面积2363.33亩，其中永久用地1989.96亩，临时用地373.37亩。本工程涉及搬迁人口251户496人，拆迁各类房屋2.54万m²。涉及企事业单位6处。规划水平年生产安置人口21人，搬迁安置人口496人。移民安置补偿投资为270396.45万元。
                 </p>
               </div>
@@ -426,10 +417,7 @@ export default function DashboardPage() {
               {/* Important Data - 2x3轮播 */}
               <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-4 border border-slate-200/50 shadow-sm hover:shadow-lg transition-shadow">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-[13px] font-semibold text-slate-800 flex items-center gap-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-400 rounded-lg flex items-center justify-center">
-                      <MapPin className="w-4 h-4 text-white" />
-                    </div>
+                  <h3 className="text-sm font-semibold text-slate-800">
                     重要数据
                   </h3>
                   <div className="flex items-center gap-1.5">
@@ -477,7 +465,7 @@ export default function DashboardPage() {
               <Briefcase className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 text-left">
-              <h2 className="text-[15px] font-bold text-slate-800">工作简报</h2>
+              <h2 className="text-base font-bold text-slate-800">工作简报</h2>
               <p className="text-xs text-slate-500">主要工作进展 · 工作动态</p>
             </div>
             <div className={`transform transition-transform duration-300 ${expandedSections.workBriefing ? 'rotate-180' : ''}`}>
@@ -489,13 +477,10 @@ export default function DashboardPage() {
             <div className="space-y-3">
               {/* 主要工作进展 */}
               <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-5 border border-slate-200/50 shadow-sm hover:shadow-lg transition-shadow">
-                <h4 className="text-[14px] font-semibold text-slate-800 mb-3 flex items-center gap-2.5">
-                  <div className="w-9 h-9 bg-gradient-to-br from-amber-400 to-orange-400 rounded-xl flex items-center justify-center shadow-md">
-                    <Briefcase className="w-5 h-5 text-white" />
-                  </div>
+                <h4 className="text-sm font-semibold text-slate-800 mb-3">
                   主要工作进展
                 </h4>
-                <div className="text-[13px] text-slate-600 leading-7 pl-11 space-y-3">
+                <div className="text-sm text-gray-600 leading-6 space-y-2">
                   <p>（一）正式确权：两乡确权公示 237 宗宅基地（佛子庄乡 228 宗，南窖乡 9 宗）。</p>
                   <p>（二）正式签约：完成签约 236 户（佛子庄乡 227 户，南窖乡 9 户，宅基地签约率 99%）（今日较前一日无变化）。</p>
                   <p>（三）已交房：两乡累计交房 228 户（佛子庄乡 220 户，南窖乡 8 户）。</p>
@@ -506,13 +491,10 @@ export default function DashboardPage() {
 
               {/* 工作动态 */}
               <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-5 border border-slate-200/50 shadow-sm hover:shadow-lg transition-shadow">
-                <h4 className="text-[14px] font-semibold text-slate-800 mb-3 flex items-center gap-2.5">
-                  <div className="w-9 h-9 bg-gradient-to-br from-amber-300 to-yellow-400 rounded-xl flex items-center justify-center shadow-md">
-                    <Clock className="w-5 h-5 text-white" />
-                  </div>
+                <h4 className="text-sm font-semibold text-slate-800 mb-3">
                   工作动态
                 </h4>
-                <p className="text-[13px] text-slate-600 leading-7 pl-11">
+                <p className="text-sm text-gray-600 leading-6">
                   佛子庄乡水库工作专班积极与拆评测公司对接，加快组卷报审工作。
                 </p>
               </div>
@@ -530,7 +512,7 @@ export default function DashboardPage() {
               <Clock className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 text-left">
-              <h2 className="text-[15px] font-bold text-slate-800">工作进度</h2>
+              <h2 className="text-base font-bold text-slate-800">工作进度</h2>
               <p className="text-xs text-slate-500">统计概览 · 甘特图</p>
             </div>
             <div className={`transform transition-transform duration-300 ${expandedSections.workProgress ? 'rotate-180' : ''}`}>
@@ -563,9 +545,6 @@ export default function DashboardPage() {
                 {/* Timeline Header with Year Switcher */}
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 bg-gradient-to-br from-emerald-400 to-teal-400 rounded-lg flex items-center justify-center">
-                      <Clock className="w-4 h-4 text-white" />
-                    </div>
                     <span className="text-sm text-slate-600 font-medium">{currentGanttYear}年进度计划</span>
                   </div>
                   {/* Year Switcher */}
@@ -680,10 +659,10 @@ export default function DashboardPage() {
             className="w-full flex items-center gap-3 py-3 bg-white/80 backdrop-blur-xl rounded-2xl px-4 shadow-sm border border-slate-200/50 hover:shadow-lg hover:border-violet-200/50 transition-all"
           >
             <div className="w-10 h-10 bg-gradient-to-br from-violet-400 to-purple-400 rounded-xl flex items-center justify-center shadow-lg shadow-violet-200/50">
-              <Landmark className="w-5 h-5 text-white" />
+              <DollarSign className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 text-left">
-              <h2 className="text-[15px] font-bold text-slate-800">移民资金</h2>
+              <h2 className="text-base font-bold text-slate-800">移民资金</h2>
               <p className="text-xs text-slate-500">资金概览 · 饼图 · 折线图</p>
             </div>
             <div className={`transform transition-transform duration-300 ${expandedSections.immigrantFunds ? 'rotate-180' : ''}`}>
@@ -718,10 +697,7 @@ export default function DashboardPage() {
 
               {/* 规划报告成果 - 独立卡片 */}
               <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-4 border border-slate-200/50 shadow-sm">
-                <h3 className="text-sm font-semibold text-slate-800 mb-3 text-center flex items-center justify-center gap-2">
-                  <div className="w-7 h-7 bg-gradient-to-br from-violet-400 to-purple-400 rounded-lg flex items-center justify-center">
-                    <Landmark className="w-4 h-4 text-white" />
-                  </div>
+                <h3 className="text-sm font-semibold text-slate-800 mb-3 text-center">
                   规划报告成果（万元）
                 </h3>
                 <div className="flex items-center gap-4">
@@ -777,12 +753,9 @@ export default function DashboardPage() {
 
               {/* 分年度投资情况 - 独立卡片 - 折线图 */}
               <div className="bg-card rounded-2xl p-4 border border-border">
-                <button 
-                  onClick={() => setShowYearlyInvestment(true)}
-                  className="w-full text-xs font-medium text-foreground mb-2 text-center hover:text-primary transition-colors cursor-pointer"
-                >
+                <h3 className="text-sm font-semibold text-slate-800 mb-3 text-center">
                   分年度投资情况（万元）
-                </button>
+                </h3>
                 {/* 图表区域 - 图例在右侧 */}
                 <div className="flex items-center gap-2">
                   {/* 折线图 SVG */}
@@ -875,7 +848,7 @@ export default function DashboardPage() {
               <Calendar className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 text-left">
-              <h2 className="text-[15px] font-bold text-slate-800">移民大事记</h2>
+              <h2 className="text-base font-bold text-slate-800">移民大事记</h2>
               <p className="text-xs text-slate-500">重要里程碑事件</p>
             </div>
             <div className={`transform transition-transform duration-300 ${expandedSections.immigrantEvents ? 'rotate-180' : ''}`}>

@@ -10,108 +10,113 @@ const organizations = [
     id: 1,
     name: "北京水投水务工程建设管理有限公司",
     role: "建设单位",
-    contact: "张经理",
-    phone: "138****1234",
-    email: "zhang@shuotou.com",
+    contacts: [
+      { name: "张经理", phone: "138****1234", email: "zhang@shuotou.com" },
+    ],
     color: "blue",
   },
   {
     id: 2,
     name: "北京市水利规划设计研究院",
     role: "总体设计牵头",
-    contact: "李总工",
-    phone: "139****5678",
-    email: "li@bwdi.com",
+    contacts: [
+      { name: "李总工", phone: "139****5678", email: "li@bwdi.com" },
+      { name: "王工", phone: "139****5679", email: "wang@bwdi.com" },
+    ],
     color: "indigo",
   },
   {
     id: 3,
     name: "中水北方勘测设计研究有限责任公司",
     role: "大坝设计",
-    contact: "王工",
-    phone: "137****9012",
-    email: "wang@csnb.com",
+    contacts: [
+      { name: "王工", phone: "137****9012", email: "wang@csnb.com" },
+      { name: "张工", phone: "137****9013", email: "zhang@csnb.com" },
+    ],
     color: "cyan",
   },
   {
     id: 4,
     name: "中水北方勘测设计研究有限责任公司",
     role: "移民安置设计",
-    contact: "赵工",
-    phone: "136****3456",
-    email: "zhao@csnb.com",
+    contacts: [
+      { name: "赵工", phone: "136****3456", email: "zhao@csnb.com" },
+    ],
     color: "sky",
   },
   {
     id: 5,
     name: "黄河勘测规划设计研究院有限公司",
     role: "设计监理",
-    contact: "刘工",
-    phone: "135****7890",
-    email: "liu@yrcc.com",
+    contacts: [
+      { name: "刘工", phone: "135****7890", email: "liu@yrcc.com" },
+      { name: "陈工", phone: "135****7891", email: "chen@yrcc.com" },
+    ],
     color: "amber",
   },
   {
     id: 6,
     name: "黄河勘测规划设计研究院有限公司",
     role: "工程量清单编制",
-    contact: "陈工",
-    phone: "134****2468",
-    email: "chen@yrcc.com",
+    contacts: [
+      { name: "陈工", phone: "134****2468", email: "chen@yrcc.com" },
+    ],
     color: "orange",
   },
   {
     id: 7,
     name: "长江监理",
     role: "大坝监理单位",
-    contact: "杨监理",
-    phone: "133****1357",
-    email: "yang@cjpm.com",
+    contacts: [
+      { name: "杨监理", phone: "133****1357", email: "yang@cjpm.com" },
+      { name: "李监理", phone: "133****1358", email: "li@cjpm.com" },
+    ],
     color: "green",
   },
   {
     id: 8,
     name: "北京艺林生态科技有限公司",
     role: "林可报告编制",
-    contact: "周工",
-    phone: "132****9753",
-    email: "zhou@yilin.com",
+    contacts: [
+      { name: "周工", phone: "132****9753", email: "zhou@yilin.com" },
+    ],
     color: "emerald",
   },
   {
     id: 9,
     name: "北京国道通公路设计研究院股份有限公司",
     role: "道路设计牵头单位",
-    contact: "吴总",
-    phone: "131****8642",
-    email: "wu@gdt.com",
+    contacts: [
+      { name: "吴总", phone: "131****8642", email: "wu@gdt.com" },
+    ],
     color: "purple",
   },
   {
     id: 10,
     name: "北京市市政工程设计研究总院有限公司",
     role: "红南路设计",
-    contact: "郑工",
-    phone: "130****7531",
-    email: "zheng@bmrdi.com",
+    contacts: [
+      { name: "郑工", phone: "130****7531", email: "zheng@bmrdi.com" },
+      { name: "孙工", phone: "130****7532", email: "sun@bmrdi.com" },
+    ],
     color: "violet",
   },
   {
     id: 11,
     name: "北京交科公路勘察设计研究院有限公司",
     role: "军红路设计",
-    contact: "孙工",
-    phone: "129****6420",
-    email: "sun@bjjk.com",
+    contacts: [
+      { name: "孙工", phone: "129****6420", email: "sun@bjjk.com" },
+    ],
     color: "fuchsia",
   },
   {
     id: 12,
     name: "北京房兴土地房地产评估有限公司",
     role: "评估公司",
-    contact: "钱工",
-    phone: "128****5319",
-    email: "qian@fangxing.com",
+    contacts: [
+      { name: "钱工", phone: "128****5319", email: "qian@fangxing.com" },
+    ],
     color: "rose",
   },
 ];
@@ -139,7 +144,7 @@ export default function ContactsPage() {
   const filteredOrgs = organizations.filter(org => 
     org.name.includes(searchQuery) || 
     org.role.includes(searchQuery) ||
-    org.contact.includes(searchQuery)
+    org.contacts.some(c => c.name.includes(searchQuery))
   );
 
   return (
@@ -155,54 +160,40 @@ export default function ContactsPage() {
       </div>
 
       {/* Header */}
-      <div className="h-16 flex items-center justify-between px-4 bg-white shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
-            <Building2 className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h1 className="text-lg font-bold text-gray-900">参建单位通讯录</h1>
-            <p className="text-xs text-gray-500">二道河水库工程</p>
-          </div>
+      <div className="h-16 flex items-center justify-between px-4 bg-white border-b border-slate-200">
+        <div>
+          <h1 className="text-base font-bold text-slate-800">参建单位通讯录</h1>
+          <p className="text-xs text-slate-500">二道河水库工程</p>
         </div>
-        <div className="px-3 py-1.5 bg-blue-50 rounded-full">
-          <span className="text-xs font-medium text-blue-600">{organizations.length} 家单位</span>
+        <div className="px-3 py-1.5 bg-slate-100 rounded-full">
+          <span className="text-xs font-medium text-slate-600">{organizations.length} 家单位</span>
         </div>
       </div>
 
       {/* Search */}
-      <div className="px-4 py-4 bg-white border-b border-gray-100">
-        <div className="h-12 bg-gray-100 rounded-xl flex items-center px-4 gap-3 border border-gray-200 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
-          <Search className="w-[18px] h-[18px] text-gray-400" />
+      <div className="px-4 py-4 bg-white border-b border-slate-100">
+        <div className="h-12 bg-slate-100 rounded-xl flex items-center px-4 gap-3 border border-slate-200 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
+          <Search className="w-[18px] h-[18px] text-slate-400" />
           <input
             type="text"
             placeholder="搜索单位名称、职责、联系人..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 bg-transparent text-gray-900 text-sm placeholder:text-gray-400 outline-none"
+            className="flex-1 bg-transparent text-slate-900 text-sm placeholder:text-slate-400 outline-none"
           />
         </div>
       </div>
 
       {/* Organization List */}
-      <div className="flex-1 overflow-y-auto">
-        {/* All Organizations Header */}
-        <div className="h-12 flex items-center px-4 bg-gradient-to-r from-blue-600 to-blue-700">
-          <Building2 className="w-5 h-5 text-white mr-3" />
-          <span className="text-white font-semibold">全部单位</span>
-          <span className="text-white/70 text-xs ml-2">{filteredOrgs.length} 家</span>
-        </div>
-
-        {/* Organization Items */}
-        <div className="px-4 py-3 space-y-3">
-          {filteredOrgs.map((org) => {
+      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+        {filteredOrgs.map((org) => {
             const colors = colorMap[org.color] || colorMap.blue;
             const isExpanded = expandedId === org.id;
             
             return (
               <div 
                 key={org.id} 
-                className={`bg-white rounded-2xl border transition-all duration-300 ${isExpanded ? `${colors.border} shadow-lg shadow-blue-50` : 'border-gray-200 shadow-sm hover:shadow-md'}`}
+                className={`bg-white/80 backdrop-blur-xl rounded-2xl border transition-all duration-300 ${isExpanded ? `${colors.border} shadow-lg shadow-blue-50` : 'border-slate-200/50 shadow-sm hover:shadow-md'}`}
               >
                 {/* Organization Header */}
                 <button
@@ -213,63 +204,62 @@ export default function ContactsPage() {
                     <Building2 className="w-5 h-5 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-gray-900 leading-tight">{org.name}</h3>
+                    <h3 className="text-sm font-semibold text-slate-800 leading-tight">{org.name}</h3>
                     <div className={`inline-flex items-center mt-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${colors.light} ${colors.text}`}>
                       {org.role}
                     </div>
                   </div>
                   <div className={`transform transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
-                    <ChevronDown className={`w-5 h-5 ${isExpanded ? colors.text : 'text-gray-400'}`} />
+                    <ChevronDown className={`w-5 h-5 ${isExpanded ? colors.text : 'text-slate-400'}`} />
                   </div>
                 </button>
                 
                 {/* Expanded Contact Details */}
                 {isExpanded && (
-                  <div className="px-4 pb-4 pl-17 space-y-3">
-                    <div className="bg-gray-50 rounded-xl p-3">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 ${colors.bg} rounded-full flex items-center justify-center`}>
-                          <span className="text-xs font-bold text-white">{org.contact[0]}</span>
+                  <div className="px-4 pb-4 space-y-3">
+                    {org.contacts.map((contact, idx) => (
+                      <div key={idx} className="bg-slate-50/80 rounded-xl p-3">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 ${colors.bg} rounded-full flex items-center justify-center`}>
+                            <span className="text-xs font-bold text-white">{contact.name[0]}</span>
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold text-slate-800">{contact.name}</p>
+                            <p className="text-xs text-slate-500">联系人</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm font-semibold text-gray-900">{org.contact}</p>
-                          <p className="text-xs text-gray-500">联系人</p>
+                        <div className="mt-2 space-y-2">
+                          <div className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl p-3">
+                            <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center">
+                              <Phone className="w-4 h-4 text-slate-600" />
+                            </div>
+                            <span className="text-sm text-slate-700">{contact.phone}</span>
+                          </div>
+                          <div className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl p-3">
+                            <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center">
+                              <Mail className="w-4 h-4 text-slate-600" />
+                            </div>
+                            <span className="text-sm text-slate-700 truncate flex-1">{contact.email}</span>
+                          </div>
+                        </div>
+                        <div className="flex gap-2 mt-2">
+                          <button className={`flex-1 h-10 ${colors.bg} rounded-xl flex items-center justify-center gap-2 text-white font-medium shadow-md hover:shadow-lg transition-all active:scale-95`}>
+                            <Phone className="w-4 h-4" />
+                            <span className="text-sm">拨打电话</span>
+                          </button>
+                          <button className="flex-1 h-10 bg-slate-100 rounded-xl flex items-center justify-center gap-2 text-slate-600 font-medium hover:bg-slate-200 transition-all active:scale-95">
+                            <Mail className="w-4 h-4" />
+                            <span className="text-sm">发送邮件</span>
+                          </button>
                         </div>
                       </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3 bg-white border border-gray-200 rounded-xl p-3">
-                        <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                          <Phone className="w-4 h-4 text-gray-600" />
-                        </div>
-                        <span className="text-sm text-gray-700">{org.phone}</span>
-                      </div>
-                      <div className="flex items-center gap-3 bg-white border border-gray-200 rounded-xl p-3">
-                        <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                          <Mail className="w-4 h-4 text-gray-600" />
-                        </div>
-                        <span className="text-sm text-gray-700 truncate flex-1">{org.email}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="flex gap-2">
-                      <button className={`flex-1 h-10 ${colors.bg} rounded-xl flex items-center justify-center gap-2 text-white font-medium shadow-md hover:shadow-lg transition-all active:scale-95`}>
-                        <Phone className="w-4 h-4" />
-                        <span className="text-sm">拨打电话</span>
-                      </button>
-                      <button className="flex-1 h-10 bg-gray-100 rounded-xl flex items-center justify-center gap-2 text-gray-600 font-medium hover:bg-gray-200 transition-all active:scale-95">
-                        <Mail className="w-4 h-4" />
-                        <span className="text-sm">发送邮件</span>
-                      </button>
-                    </div>
+                    ))}
                   </div>
                 )}
               </div>
             );
           })}
         </div>
-      </div>
 
       {/* Bottom Navigation */}
       <BottomNav />
