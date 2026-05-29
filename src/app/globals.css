@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+:root {
+  /* 柔和商业色调 - 深蓝+香槟金配色方案 */
+  --background: #fafbfc;
+  --foreground: #1a2332;
+  --card: #ffffff;
+  --card-foreground: #1a2332;
+  --primary: #2c4a6e;
+  --primary-foreground: #ffffff;
+  --secondary: #f0f4f8;
+  --secondary-foreground: #5a6a7a;
+  --muted: #f5f7fa;
+  --muted-foreground: #8a96a8;
+  --accent: #c9a962;
+  --accent-foreground: #1a2332;
+  --warning: #e8b86d;
+  --warning-foreground: #1a2332;
+  --danger: #d67373;
+  --danger-foreground: #ffffff;
+  --border: #e8ecf1;
+  --input: #f5f7fa;
+  --ring: #2c4a6e;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--secondary);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* Safe area for mobile */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+/* Status bar height */
+.status-bar-height {
+  height: 44px;
+}
+
+/* Bottom nav height */
+.bottom-nav-height {
+  height: 80px;
+}
+
+/* Animation for map markers */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
