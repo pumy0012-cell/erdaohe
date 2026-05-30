@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
 import { useAdmin } from "@/contexts/AdminContext";
@@ -12,11 +12,20 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showError, setShowError] = useState(false);
+
+  useEffect(() => {
+    setUsername("admin");
+    setPassword("");
+  }, []);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (login(username, password)) {
       router.push("/dashboard");
+    } else {
+      setShowError(true);
+      setTimeout(() => setShowError(false), 3000);
     }
   };
 
@@ -95,6 +104,13 @@ export default function LoginPage() {
               忘记密码？
             </button>
           </div>
+
+          {/* Error Message */}
+          {showError && (
+            <div className="h-10 bg-red-50 border border-red-200 rounded-xl flex items-center justify-center">
+              <span className="text-sm text-red-600 font-medium">密码错误</span>
+            </div>
+          )}
 
           {/* Login Button */}
           <button

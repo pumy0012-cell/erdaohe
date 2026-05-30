@@ -889,9 +889,6 @@ export default function DashboardPage() {
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                           <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2">
-                            <div className="w-8 h-8 bg-gradient-to-br from-rose-400 to-pink-400 rounded-lg flex items-center justify-center">
-                              <Calendar className="w-4 h-4 text-white" />
-                            </div>
                             <span className="text-[11px] text-white bg-black/40 px-2.5 py-1 rounded-full">
                               {event.date}
                             </span>
@@ -911,13 +908,13 @@ export default function DashboardPage() {
                   {/* 左右切换按钮 */}
                   <button
                     onClick={() => setMilestoneIndex((prev) => (prev - 1 + milestoneEvents.length) % milestoneEvents.length)}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/95 rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
+                    className="absolute left-2 top-12 w-8 h-8 bg-white/95 rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
                   >
                     <ChevronLeft className="w-5 h-5 text-slate-600" />
                   </button>
                   <button
                     onClick={() => setMilestoneIndex((prev) => (prev + 1) % milestoneEvents.length)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/95 rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
+                    className="absolute right-2 top-12 w-8 h-8 bg-white/95 rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
                   >
                     <ChevronRight className="w-5 h-5 text-slate-600" />
                   </button>

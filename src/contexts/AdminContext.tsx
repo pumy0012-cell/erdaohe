@@ -32,17 +32,17 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const verifyPassword = (inputPassword: string): boolean => {
-    return inputPassword === "erdaohe2025";
+    return inputPassword === "";
   };
 
   const login = (username: string, password: string): boolean => {
-    if (username === "admin" && verifyPassword(password)) {
+    if (username === "admin" && password === "") {
       setIsAdmin(true);
       localStorage.setItem("isAdmin", "true");
       
       const newUserInfo: UserInfo = {
         username,
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`,
+        avatar: `https://ui-avatars.com/api/?name=${username}&background=2c4a6e&color=fff`,
       };
       setUserInfo(newUserInfo);
       localStorage.setItem("userInfo", JSON.stringify(newUserInfo));

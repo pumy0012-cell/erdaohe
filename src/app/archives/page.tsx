@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { 
   Search, ChevronDown, Download, Eye, FileText, 
-  Clock, User, FolderOpen, Calendar, Filter, X, File, FileSpreadsheet, FileImage
+  Clock, User, FolderOpen, Calendar, Filter, X, File, FileSpreadsheet, FileImage, Trash2
 } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 
-const archiveData = [
+const initialArchiveData = [
   { no: "DA-2026-001", name: "张三移民安置档案", type: "个人档案", status: "已归档", date: "2026-01-15", owner: "李经理", desc: "包含身份证明、搬迁协议、补偿明细等相关材料", fileType: "pdf", fileUrl: "/files/sample.pdf" },
   { no: "DA-2026-002", name: "幸福新村工程档案", type: "工程档案", status: "已归档", date: "2026-01-20", owner: "王工", desc: "工程建设全过程资料，包括设计图纸、施工记录、验收报告", fileType: "doc", fileUrl: "/files/sample.doc" },
   { no: "DA-2026-003", name: "征地补偿协议", type: "文书档案", status: "暂存", date: "2026-02-01", owner: "张主任", desc: "征地补偿相关协议文件，待补充签字页", fileType: "xlsx", fileUrl: "/files/sample.xlsx" },
@@ -33,13 +33,14 @@ export default function ArchivePage() {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
-  const [selectedArchive, setSelectedArchive] = useState<typeof archiveData[0] | null>(null);
+  const [archives, setArchives] = useState(initialArchiveData);
+  const [selectedArchive, setSelectedArchive] = useState<typeof initialArchiveData[0] | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [selectedType, setSelectedType] = useState<string>("全部");
   const [selectedStatus, setSelectedStatus] = useState<string>("全部");
 
-  const filteredData = archiveData.filter(item => {
+  const filteredData = archives.filter(item => {
     const matchSearch = item.name.includes(searchQuery) || 
       item.no.includes(searchQuery) || 
       item.owner.includes(searchQuery);
@@ -58,6 +59,13 @@ export default function ArchivePage() {
       case "文书档案": return colorMap.green;
       case "财务档案": return colorMap.amber;
       default: return colorMap.blue;
+    }
+  };
+
+  const handleDeleteArchive = (no: string) => {
+    if (confirm("确定要删除这个档案吗？")) {
+      setArchives(archives.filter(a => a.no !== no));
+      setShowViewModal(false);
     }
   };
 
@@ -347,12 +355,19 @@ export default function ArchivePage() {
                 </div>
               </div>
             </div>
-            <div className="p-5 pt-0">
+            <div className="p-5 pt-0 space-y-2">
               <button
                 onClick={() => setShowViewModal(false)}
                 className="w-full h-11 bg-blue-500 rounded-xl text-white font-medium"
               >
                 关闭
+              </button>
+              <button
+                onClick={() => selectedArchive && handleDeleteArchive(selectedArchive.no)}
+                className="w-full h-11 bg-red-500 rounded-xl text-white font-medium flex items-center justify-center gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                删除档案
               </button>
             </div>
           </div>
