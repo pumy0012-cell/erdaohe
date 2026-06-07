@@ -80,7 +80,7 @@ export default function MapPage() {
 
       const [r, g, b] = rgbColor;
       
-      const villageColors = [
+      const villageColors: [number, number, number][] = [
         [59, 130, 246],   // 蓝色
         [34, 197, 94],    // 绿色
         [249, 115, 22],   // 橙色
@@ -90,10 +90,11 @@ export default function MapPage() {
         [234, 179, 8],    // 黄色
         [239, 68, 68],    // 红色
         [99, 102, 241],   // 靛蓝
-        [16, 185, 129],   //  emerald
+        [16, 185, 129],   // emerald
       ];
       
-      let style: Style | StyleFunction;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let style: any;
       
       if (showLabel && labelField) {
         const isAdminLayer = layerId === "行政区域";
